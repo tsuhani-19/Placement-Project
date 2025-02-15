@@ -1,26 +1,22 @@
-// Import required modules
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const eventRoutes = require('./routes/eventRoutes.js');
 
-// Load environment variables
-dotenv.config();
-
-// Initialize the Express app
+// Initialize the app
 const app = express();
+app.use(cors()); // Allow CORS for all routes
+app.use(express.json()); // Parse JSON bodies
+app.use('/api/events', eventRoutes); // Event routes
 
-// Middleware
-app.use(cors()); // Enable Cross-Origin Resource Sharing
-app.use(express.json()); // Parse incoming JSON requests
+// Database connection   nmC3ggJA5U9GrBFg
+mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log(err));
 
-// Sample route
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
+// Start the server
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
-
-// Set up the server to listen on a port
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
